@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.AddItemActivity"></activity>
-        <activity android:name=".Activities.ItemScannerActivity" />
         <activity android:name=".Activities.BasketActivity" />
         <activity android:name=".Activities.LoginActivity" >
         <intent-filter>

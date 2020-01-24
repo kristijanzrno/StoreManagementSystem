@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10sp">
+
+            <TextView
+                android:id="@+id/basketItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/itemModificationHolder"
+                android:ellipsize="end"
+                android:text="ItemName"
+                android:textColor="@color/gBlue"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/itemModificationHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_gravity="center_vertical"
+                        app:cardBackgroundColor="@color/gBlue">
+
+                        <TextView
+                            android:id="@+id/baskedDecreaseQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="-"
+                            android:textColor="#FFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="3"
+                        android:textColor="@color/gYellow"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_gravity="center_vertical"
+                        app:cardBackgroundColor="@color/gBlue">
+
+                        <TextView
+                            android:id="@+id/baskedIncreaseQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="+"
+                            android:textColor="#FFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </androidx.cardview.widget.CardView>
+
+                    <ImageView
+                        android:layout_width="40sp"
+                        android:layout_height="40sp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_remove"
+                        android:tint="@color/gRed" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

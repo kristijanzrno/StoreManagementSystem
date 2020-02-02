@@ -15,14 +15,15 @@ import com.example.storemanagementsystem.R;
 
 import java.util.ArrayList;
 
+import Data.CustomerPurchaseItem;
 import Data.PurchaseItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BasketRecyclerViewAdapter extends RecyclerView.Adapter<BasketRecyclerViewAdapter.ViewHolder> {
-    private ArrayList<PurchaseItem> items;
+    private ArrayList<CustomerPurchaseItem> items;
 
-    public BasketRecyclerViewAdapter(@NonNull ArrayList<PurchaseItem> items) {
+    public BasketRecyclerViewAdapter(@NonNull ArrayList<CustomerPurchaseItem> items) {
         this.items = items;
     }
 

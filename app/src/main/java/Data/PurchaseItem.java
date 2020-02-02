@@ -1,9 +1,9 @@
 package Data;
 
 public class PurchaseItem {
-    private String id;
-    private String itemName;
-    private Integer quantity = 1;
+    protected String id;
+    protected String itemName;
+    protected Integer quantity = 1;
 
     public PurchaseItem(){}
 

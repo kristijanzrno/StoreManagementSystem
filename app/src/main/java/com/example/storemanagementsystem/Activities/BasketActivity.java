@@ -60,10 +60,10 @@ public class BasketActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         setupViews();
         client = new WServiceClient("http://192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement");
-        invoice.setCustomerID(2);
-        invoice.setDateCreated(new SimpleDateFormat("yyyy-dd-mm").format(new Date()));
+        invoice.setUserID(2);
+        invoice.setInvoiceDate(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
         invoice.setTotalPrice(12);
-        invoice.setDescription("invoice description");
+        invoice.setInvoiceDescription("invoice description");
     }
 
 
@@ -176,8 +176,8 @@ public class BasketActivity extends AppCompatActivity{
             StockItem item = gson.fromJson(result, StockItem.class);
 
             CustomerPurchaseItem customerPurchaseItem = new CustomerPurchaseItem();
-            customerPurchaseItem.setId(""+item.getItemID());
-            customerPurchaseItem.setItemName(item.getItemDescription());
+            customerPurchaseItem.setItemID(""+item.getItemID());
+            customerPurchaseItem.setItemName(item.getName());
             invoice.getItems().add(customerPurchaseItem);
 
             adapter.notifyDataSetChanged();

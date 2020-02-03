@@ -1,26 +1,18 @@
 package Data;
 
 public class PurchaseItem {
-    protected String id;
+    protected String itemID;
     protected String itemName;
     protected Integer quantity = 1;
 
     public PurchaseItem(){}
 
-    public String getId() {
-        return id;
+    public String getItemID() {
+        return itemID;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setItemID(String itemID) {
+        this.itemID = itemID;
     }
 
     public String getItemName() {
@@ -29,6 +21,14 @@ public class PurchaseItem {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public void increaseQuantity(){

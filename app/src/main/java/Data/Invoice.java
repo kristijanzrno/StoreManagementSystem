@@ -1,11 +1,11 @@
 package Data;
 
-import java.util.Date;
 
 public class Invoice {
     protected int invoiceID;
-    protected String description;
-    protected String dateCreated;
+    protected int userID;
+    protected String invoiceDate;
+    protected String invoiceDescription;
     protected float totalPrice;
 
     public int getInvoiceID() {
@@ -16,20 +16,28 @@ public class Invoice {
         this.invoiceID = invoiceID;
     }
 
-    public String getDescription() {
-        return description;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public String getDateCreated() {
-        return dateCreated;
+    public String getInvoiceDate() {
+        return invoiceDate;
     }
 
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setInvoiceDate(String invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public String getInvoiceDescription() {
+        return invoiceDescription;
+    }
+
+    public void setInvoiceDescription(String invoiceDescription) {
+        this.invoiceDescription = invoiceDescription;
     }
 
     public float getTotalPrice() {

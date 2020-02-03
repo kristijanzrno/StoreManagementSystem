@@ -3,11 +3,11 @@ package Data;
 public class Supplier {
     private int supplierID;
     private String name;
+    private String description;
     private String address;
     private String shipmentAddress;
     private String email;
     private String phoneNumber;
-    private String description;
 
     public int getSupplierID() {
         return supplierID;

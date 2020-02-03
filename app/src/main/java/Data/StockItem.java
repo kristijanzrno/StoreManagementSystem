@@ -1,21 +1,19 @@
 package Data;
 
-import java.util.Date;
-
 public class StockItem {
     private int itemID;
-    private String itemDescription;
-    private String itemType;
-    private int itemManufacturerPartNum;
-    private String itemPurchaseInfo;
-    private String itemDescriptionOfSale;
-    private float itemCost;
-    private float itemSalesPrice;
-    private String itemPreferredSupplier;
-    private float itemVAT;
-    private String itemlastModified;
-    private boolean itemisRentable;
-    private int itemQuantity;
+    private String name;
+    private String description;
+    private int quantity;
+    private String type;
+    private int manufacturerPartNum;
+    private float cost;
+    private float salesPrice;
+    private String preferredSupplier;
+    private float VAT;
+    private String dateCreated;
+    private String lastModified;
+    private boolean isRentable;
 
     public int getItemID() {
         return itemID;
@@ -25,99 +23,99 @@ public class StockItem {
         this.itemID = itemID;
     }
 
-    public String getItemDescription() {
-        return itemDescription;
+    public String getName() {
+        return name;
     }
 
-    public void setItemDescription(String itemDescription) {
-        this.itemDescription = itemDescription;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getItemType() {
-        return itemType;
+    public String getDescription() {
+        return description;
     }
 
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getItemManufacturerPartNum() {
-        return itemManufacturerPartNum;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setItemManufacturerPartNum(int itemManufacturerPartNum) {
-        this.itemManufacturerPartNum = itemManufacturerPartNum;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public String getItemPurchaseInfo() {
-        return itemPurchaseInfo;
+    public String getType() {
+        return type;
     }
 
-    public void setItemPurchaseInfo(String itemPurchaseInfo) {
-        this.itemPurchaseInfo = itemPurchaseInfo;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getItemDescriptionOfSale() {
-        return itemDescriptionOfSale;
+    public int getManufacturerPartNum() {
+        return manufacturerPartNum;
     }
 
-    public void setItemDescriptionOfSale(String itemDescriptionOfSale) {
-        this.itemDescriptionOfSale = itemDescriptionOfSale;
+    public void setManufacturerPartNum(int manufacturerPartNum) {
+        this.manufacturerPartNum = manufacturerPartNum;
     }
 
-    public float getItemCost() {
-        return itemCost;
+    public float getCost() {
+        return cost;
     }
 
-    public void setItemCost(float itemCost) {
-        this.itemCost = itemCost;
+    public void setCost(float cost) {
+        this.cost = cost;
     }
 
-    public float getItemSalesPrice() {
-        return itemSalesPrice;
+    public float getSalesPrice() {
+        return salesPrice;
     }
 
-    public void setItemSalesPrice(float itemSalesPrice) {
-        this.itemSalesPrice = itemSalesPrice;
+    public void setSalesPrice(float salesPrice) {
+        this.salesPrice = salesPrice;
     }
 
-    public String getItemPreferredSupplier() {
-        return itemPreferredSupplier;
+    public String getPreferredSupplier() {
+        return preferredSupplier;
     }
 
-    public void setItemPreferredSupplier(String itemPreferredSupplier) {
-        this.itemPreferredSupplier = itemPreferredSupplier;
+    public void setPreferredSupplier(String preferredSupplier) {
+        this.preferredSupplier = preferredSupplier;
     }
 
-    public float getItemVAT() {
-        return itemVAT;
+    public float getVAT() {
+        return VAT;
     }
 
-    public void setItemVAT(float itemVAT) {
-        this.itemVAT = itemVAT;
+    public void setVAT(float VAT) {
+        this.VAT = VAT;
     }
 
-    public String getItemlastModified() {
-        return itemlastModified;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public void setItemlastModified(String itemlastModified) {
-        this.itemlastModified = itemlastModified;
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public boolean isItemisRentable() {
-        return itemisRentable;
+    public String getLastModified() {
+        return lastModified;
     }
 
-    public void setItemisRentable(boolean itemisRentable) {
-        this.itemisRentable = itemisRentable;
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
     }
 
-    public int getItemQuantity() {
-        return itemQuantity;
+    public boolean isRentable() {
+        return isRentable;
     }
 
-    public void setItemQuantity(int itemQuantity) {
-        this.itemQuantity = itemQuantity;
+    public void setRentable(boolean rentable) {
+        isRentable = rentable;
     }
 }

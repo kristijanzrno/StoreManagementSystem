@@ -1,24 +1,15 @@
 package Data;
 
 public class RefillInvoice extends Invoice{
-    private int employeeID;
-    private String supplier;
+    private String supplierID;
     private String shipmentAddress;
 
-    public int getEmployeeID() {
-        return employeeID;
+    public String getSupplierID() {
+        return supplierID;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
-    }
-
-    public String getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(String supplier) {
-        this.supplier = supplier;
+    public void setSupplierID(String supplierID) {
+        this.supplierID = supplierID;
     }
 
     public String getShipmentAddress() {

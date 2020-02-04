@@ -42,35 +42,44 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BasketActivity extends AppCompatActivity{
+public class BasketActivity extends AppCompatActivity implements WServiceClient.SendGetRequest.ClientFetchDelegate, WServiceClient.SendPostRequest.TransactionDelegate, MessageDialogs.DialogResponses, BasketRecyclerViewAdapter.BasketItemActions {
 
 
     @BindView(R.id.basketRecyclerView)
     RecyclerView recyclerView;
-    ProgressDialog pd;
 
-    PurchaseInvoice invoice = new PurchaseInvoice();
+    ProgressDialog pd;
 
     WServiceClient client;
     BasketRecyclerViewAdapter adapter;
+    Gson gson;
+
+    PurchaseInvoice invoice = new PurchaseInvoice();
+    private int userID = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basket);
         ButterKnife.bind(this);
         setupViews();
-        client = new WServiceClient("http://192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement");
-        invoice.setUserID(2);
-        invoice.setInvoiceDate(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
-        invoice.setTotalPrice(12);
-        invoice.setInvoiceDescription("invoice description");
+        userID = getIntent().getIntExtra("userID", -1);
+        gson = new GsonBuilder().setFieldNamingStrategy(f -> f.getName().toLowerCase()).create();
+        client = new WServiceClient("http://192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement", gson);
+        populateInvoice();
     }
 
+    private void populateInvoice(){
+        invoice.setUserID(userID);
+        invoice.setInvoiceDate(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
+        invoice.setHasRentedItems(false);
+        invoice.setInvoiceDescription("");
+    }
 
 
     private void setupViews(){
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        adapter = new BasketRecyclerViewAdapter(invoice.getItems());
+        adapter = new BasketRecyclerViewAdapter(invoice.getItems(), this);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -81,7 +90,6 @@ public class BasketActivity extends AppCompatActivity{
     public void scanItem(View view){
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.setPrompt("Please scan an item QR Code...");
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
         integrator.setBarcodeImageEnabled(false);
@@ -90,8 +98,13 @@ public class BasketActivity extends AppCompatActivity{
 
     @OnClick(R.id.confirmPurchase)
     public void confirmPurchase(View view){
-        Toast.makeText(this, "sending request", Toast.LENGTH_SHORT).show();
-        client.createCustomerPurchaseInvoice(invoice);
+        if(!invoice.getItems().isEmpty()) {
+            Toast.makeText(this, "Purchasing items...", Toast.LENGTH_SHORT).show();
+            invoice.setInvoiceDescription("User: " + userID + " | NoOfItems: " + invoice.getItems().size());
+            client.createCustomerPurchaseInvoice(invoice, this);
+        }else{
+            Toast.makeText(this, "The basket is empty...", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -103,89 +116,74 @@ public class BasketActivity extends AppCompatActivity{
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if(result != null && result.getContents() != null){
                 System.out.println(result.getContents());
-                new JsonTask().execute("http:/192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement/getItem/" + result.getContents());
+                client.getItem(result.getContents(), this);
             }
         }
     }
 
-    private class JsonTask extends AsyncTask<String, String, String> {
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            pd = new ProgressDialog(BasketActivity.this);
-            pd.setMessage("Please wait");
-            pd.setCancelable(false);
-            pd.show();
+    @Override
+    public void onObjectFetched(String method, String json) {
+        if(json.isEmpty() || json==null) return;
+        switch(method){
+            case "getItem":
+                StockItem item = gson.fromJson(json, StockItem.class);
+                if(item.isRentable())
+                    invoice.setHasRentedItems(true);
+                CustomerPurchaseItem customerPurchaseItem = new CustomerPurchaseItem();
+                customerPurchaseItem.setItemID(""+item.getItemID());
+                customerPurchaseItem.setItemName(item.getName());
+                invoice.getItems().add(customerPurchaseItem);
+                adapter.notifyDataSetChanged();
+                break;
         }
 
-        protected String doInBackground(String... params) {
+    }
 
+    @Override
+    public void transactionFinished(boolean success) {
+        if(success)
+            MessageDialogs.transactionFinishedDialog(this, this);
+    }
 
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
-            try {
-                URL url = new URL(params[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-
-
-                InputStream stream = connection.getInputStream();
-
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line+"\n");
-                    Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
-
-                }
-
-                return buffer.toString();
-
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (pd.isShowing()){
-                pd.dismiss();
-            }
-            Gson gson = new GsonBuilder().setFieldNamingStrategy(f -> f.getName().toLowerCase()).create();
-            StockItem item = gson.fromJson(result, StockItem.class);
-
-            CustomerPurchaseItem customerPurchaseItem = new CustomerPurchaseItem();
-            customerPurchaseItem.setItemID(""+item.getItemID());
-            customerPurchaseItem.setItemName(item.getName());
-            invoice.getItems().add(customerPurchaseItem);
-
+    @Override
+    public void finishTransaction(boolean answer) {
+        if(answer)
+            finish();
+        else{
+            populateInvoice();
+            invoice.getItems().clear();
             adapter.notifyDataSetChanged();
+        }
+    }
 
-
+    @Override
+    public void removeItem(boolean answer, int position) {
+        if(answer){
+            invoice.getItems().remove(position);
+            adapter.notifyDataSetChanged();
         }
     }
 
 
+    @Override
+    public void increaseQuantity(int position) {
+        invoice.getItems().get(position).increaseQuantity();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void decreaseQuantity(int position) {
+        if(invoice.getItems().get(position).getQuantity() == 1){
+            basketRemoveItem(position);
+        }else {
+            invoice.getItems().get(position).increaseQuantity();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void basketRemoveItem(int position) {
+        MessageDialogs.removeItemDialog(this, this, position);
+    }
 }
 

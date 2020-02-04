@@ -16,15 +16,22 @@ import com.example.storemanagementsystem.R;
 import java.util.ArrayList;
 
 import Data.CustomerPurchaseItem;
-import Data.PurchaseItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BasketRecyclerViewAdapter extends RecyclerView.Adapter<BasketRecyclerViewAdapter.ViewHolder> {
     private ArrayList<CustomerPurchaseItem> items;
+    private BasketItemActions actions;
 
-    public BasketRecyclerViewAdapter(@NonNull ArrayList<CustomerPurchaseItem> items) {
+    public interface BasketItemActions{
+        void increaseQuantity(int position);
+        void decreaseQuantity(int position);
+        void basketRemoveItem(int position);
+    }
+
+    public BasketRecyclerViewAdapter(@NonNull ArrayList<CustomerPurchaseItem> items, BasketItemActions actions) {
         this.items = items;
+        this.actions = actions;
     }
 
     @NonNull
@@ -40,17 +47,14 @@ public class BasketRecyclerViewAdapter extends RecyclerView.Adapter<BasketRecycl
         holder.quantityTV.setText(""+items.get(position).getQuantity());
 
         holder.increaseQuantity.setOnClickListener(v -> {
-            items.get(position).increaseQuantity();
-            notifyDataSetChanged();
+            actions.increaseQuantity(position);
         });
 
         holder.decreaseQuantity.setOnClickListener(v -> {
-            items.get(position).decreaseQuantity();
-            notifyDataSetChanged();
+            actions.decreaseQuantity(position);
         });
         holder.removeItem.setOnClickListener(v -> {
-            items.remove(position);
-            notifyDataSetChanged();
+            actions.basketRemoveItem(position);
         });
     }
 

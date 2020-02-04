@@ -13,7 +13,7 @@ public class User {
     protected String email;
     protected String address;
     protected String phoneNumber;
-    protected String accountType;
+    protected int accountType;
 
     public int getUserID() {
         return userID;
@@ -79,11 +79,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getAccountType() {
+    public int getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(String accountType) {
+    public void setAccountType(int accountType) {
         this.accountType = accountType;
     }
 

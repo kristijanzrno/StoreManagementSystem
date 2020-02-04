@@ -48,8 +48,6 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
     @BindView(R.id.basketRecyclerView)
     RecyclerView recyclerView;
 
-    ProgressDialog pd;
-
     WServiceClient client;
     BasketRecyclerViewAdapter adapter;
     Gson gson;
@@ -61,8 +59,12 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basket);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         ButterKnife.bind(this);
         setupViews();
+
         userID = getIntent().getIntExtra("userID", -1);
         gson = new GsonBuilder().setFieldNamingStrategy(f -> f.getName().toLowerCase()).create();
         client = new WServiceClient("http://192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement", gson);
@@ -96,12 +98,15 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
         integrator.initiateScan();
     }
 
+    @OnClick(R.id.addManually)
+    public void addManually(View v){
+        MessageDialogs.addManually(this, this);
+    }
+
     @OnClick(R.id.confirmPurchase)
     public void confirmPurchase(View view){
         if(!invoice.getItems().isEmpty()) {
-            Toast.makeText(this, "Purchasing items...", Toast.LENGTH_SHORT).show();
-            invoice.setInvoiceDescription("User: " + userID + " | NoOfItems: " + invoice.getItems().size());
-            client.createCustomerPurchaseInvoice(invoice, this);
+            MessageDialogs.confirmPurchase(this, this);
         }else{
             Toast.makeText(this, "The basket is empty...", Toast.LENGTH_SHORT).show();
         }
@@ -123,17 +128,29 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
 
     @Override
     public void onObjectFetched(String method, String json) {
-        if(json.isEmpty() || json==null) return;
+        if(json.isEmpty() || json==null){
+            Toast.makeText(this, "Could not find the item...", Toast.LENGTH_SHORT).show();
+            return;
+        }
         switch(method){
             case "getItem":
-                StockItem item = gson.fromJson(json, StockItem.class);
-                if(item.isRentable())
-                    invoice.setHasRentedItems(true);
+                StockItem item;
+                try {
+                    item = gson.fromJson(json, StockItem.class);
+                }catch (Exception e){
+                    Toast.makeText(this, "Could not find the item...", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 CustomerPurchaseItem customerPurchaseItem = new CustomerPurchaseItem();
                 customerPurchaseItem.setItemID(""+item.getItemID());
                 customerPurchaseItem.setItemName(item.getName());
+                if(item.isRentable()) {
+                    invoice.setHasRentedItems(true);
+                    customerPurchaseItem.setDateRented(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
+                }
                 invoice.getItems().add(customerPurchaseItem);
                 adapter.notifyDataSetChanged();
+                Toast.makeText(this, "Item added!", Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -164,6 +181,20 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
         }
     }
 
+    @Override
+    public void addManually(String itemID) {
+        client.getItem(itemID, this);
+    }
+
+    @Override
+    public void confirmTransaction(boolean answer) {
+        if(answer) {
+            Toast.makeText(this, "Purchasing items...", Toast.LENGTH_SHORT).show();
+            invoice.setInvoiceDescription("User: " + userID + " | NoOfItems: " + invoice.getItems().size());
+            client.createCustomerPurchaseInvoice(invoice, this);
+        }
+    }
+
 
     @Override
     public void increaseQuantity(int position) {
@@ -176,7 +207,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
         if(invoice.getItems().get(position).getQuantity() == 1){
             basketRemoveItem(position);
         }else {
-            invoice.getItems().get(position).increaseQuantity();
+            invoice.getItems().get(position).decreaseQuantity();
             adapter.notifyDataSetChanged();
         }
     }

@@ -165,6 +165,8 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
     public void transactionFinished(boolean success) {
         if(success)
             MessageDialogs.transactionFinishedDialog(this, this);
+        else
+            Toast.makeText(this, "Could not complete purchase...", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -68,7 +68,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
     private void populateInvoice(){
         localPrices.clear();
         invoice.setUserID(userID);
-        invoice.setInvoiceDate(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
+        invoice.setInvoiceDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         invoice.setHasRentedItems(false);
         invoice.setInvoiceDescription("");
     }
@@ -148,7 +148,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
                 customerPurchaseItem.setItemName(item.getName());
                 if(item.isRentable()) {
                     invoice.setHasRentedItems(true);
-                    customerPurchaseItem.setDateRented(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
+                    customerPurchaseItem.setDateRented(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                 }
                 if(!invoice.addItem(customerPurchaseItem))
                     localPrices.add(item.getCost() + item.getCost()*(item.getVAT()/100));

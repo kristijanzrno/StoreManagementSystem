@@ -5,13 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.storemanagementsystem.R;
@@ -20,24 +17,18 @@ import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import Adapters.BasketRecyclerViewAdapter;
 import Data.CustomerPurchaseItem;
 import Data.PurchaseInvoice;
-import Data.PurchaseItem;
 import Data.StockItem;
-import Data.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -47,6 +38,8 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
 
     @BindView(R.id.basketRecyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.headerDescription)
+    TextView headerDescription;
 
     WServiceClient client;
     BasketRecyclerViewAdapter adapter;
@@ -54,6 +47,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
 
     PurchaseInvoice invoice = new PurchaseInvoice();
     private int userID = 1;
+    private ArrayList<Float> localPrices = new ArrayList<Float>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +66,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
     }
 
     private void populateInvoice(){
+        localPrices.clear();
         invoice.setUserID(userID);
         invoice.setInvoiceDate(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
         invoice.setHasRentedItems(false);
@@ -85,6 +80,14 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    private void updateHeader(){
+        float totalPrice = 0f;
+        for(int i = 0; i<localPrices.size(); i++){
+            totalPrice += invoice.getItems().get(i).getQuantity() * localPrices.get(i);
+        }
+        headerDescription.setText("Total Items: " + invoice.getItems().size() + " ("+String.format("%.2f", totalPrice)+"£)");
     }
 
 
@@ -111,7 +114,6 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
             Toast.makeText(this, "The basket is empty...", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     // Results from the scanner
     @Override
@@ -148,9 +150,11 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
                     invoice.setHasRentedItems(true);
                     customerPurchaseItem.setDateRented(new SimpleDateFormat("yyyy-dd-MM").format(new Date()));
                 }
-                invoice.getItems().add(customerPurchaseItem);
+                if(!invoice.addItem(customerPurchaseItem))
+                    localPrices.add(item.getCost() + item.getCost()*(item.getVAT()/100));
                 adapter.notifyDataSetChanged();
                 Toast.makeText(this, "Item added!", Toast.LENGTH_SHORT).show();
+                updateHeader();
                 break;
         }
 
@@ -178,6 +182,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
         if(answer){
             invoice.getItems().remove(position);
             adapter.notifyDataSetChanged();
+            localPrices.remove(position);
         }
     }
 
@@ -200,6 +205,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
     public void increaseQuantity(int position) {
         invoice.getItems().get(position).increaseQuantity();
         adapter.notifyDataSetChanged();
+        updateHeader();
     }
 
     @Override
@@ -210,6 +216,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
             invoice.getItems().get(position).decreaseQuantity();
             adapter.notifyDataSetChanged();
         }
+        updateHeader();
     }
 
     @Override

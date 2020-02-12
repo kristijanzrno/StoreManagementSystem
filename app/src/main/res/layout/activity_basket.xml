@@ -46,7 +46,7 @@
                   android:layout_height="wrap_content"
                   android:textColor="@color/grey"
                   android:textStyle="bold"
-                  android:text="Total items: 0 (0.0$)"
+                  android:text="Total items: 0 (0.00£)"
                   android:textSize="18sp"
                   android:layout_alignParentBottom="true"
                   android:layout_marginBottom="15sp"

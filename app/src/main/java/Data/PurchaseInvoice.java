@@ -22,4 +22,14 @@ public class PurchaseInvoice extends Invoice{
     public void setHasRentedItems(boolean hasRentedItems) {
         this.hasRentedItems = hasRentedItems;
     }
+    public boolean addItem(CustomerPurchaseItem item){
+        for(int i = 0; i < items.size(); i++){
+            if(items.get(i).getItemID().equals(item.getItemID())){
+                items.get(i).setQuantity(items.get(i).getQuantity() + item.getQuantity());
+                return true;
+            }
+        }
+        this.items.add(item);
+        return false;
+    }
 }

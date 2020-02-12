@@ -67,6 +67,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
 
     private void populateInvoice(){
         localPrices.clear();
+        updateHeader();
         invoice.setUserID(userID);
         invoice.setInvoiceDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         invoice.setHasRentedItems(false);

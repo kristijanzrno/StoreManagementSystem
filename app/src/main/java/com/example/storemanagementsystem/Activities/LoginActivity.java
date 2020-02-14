@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements WServiceClient.S
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         gson = new GsonBuilder().setFieldNamingStrategy(f -> f.getName().toLowerCase()).create();
-        client = new WServiceClient("http://192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement", gson);
+        client = new WServiceClient("http://10.0.2.2:8080/StoreManagementSystemAPI/webresources/StoreManagement", gson);
 
     }
 
@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements WServiceClient.S
         user.setUsername(usernameTB.getText().toString());
         try {
             user.setEncryptedPassword(passwordTB.getText().toString());
+            System.out.println(user.getPassword());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

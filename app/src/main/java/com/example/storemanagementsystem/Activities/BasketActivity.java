@@ -61,7 +61,7 @@ public class BasketActivity extends AppCompatActivity implements WServiceClient.
 
         userID = getIntent().getIntExtra("userID", -1);
         gson = new GsonBuilder().setFieldNamingStrategy(f -> f.getName().toLowerCase()).create();
-        client = new WServiceClient("http://192.168.0.12:8080/StoreManagementSystem/webresources/StoreManagement", gson);
+        client = new WServiceClient("http://10.0.2.2:8080/StoreManagementSystemAPI/webresources/StoreManagement", gson);
         populateInvoice();
     }
 
